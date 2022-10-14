@@ -484,7 +484,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   btnConnect: {fileID: 2015018194}
-  btnSend: {fileID: 0}
+  btnSend: {fileID: 1623518369}
   text: {fileID: 269881531}
 --- !u!1 &1397019505
 GameObject:

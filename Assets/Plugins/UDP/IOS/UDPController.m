@@ -2,6 +2,7 @@
 //  UnityFramework
 //
 //  Created by 应彧刚 on 2022/10/3.
+//  https://github.com/namesubai/SocketDemo/blob/master/CFSocketiOS/CFSocketiOS/ViewController.m
 //
 
 #import <Foundation/Foundation.h>
@@ -12,11 +13,6 @@
 #import <unistd.h>
 #import <UDPController.h>
 
-/** 这个端口可以随便设置*/
-#define TEST_IP_PROT 9091
-/** 替换成你需要连接服务器绑定的IP地址，不能随便输*/
-#define TEST_IP_ADDR "192.168.11.2"
-
 
 @implementation UnityAppController(UDPController)
 
@@ -24,12 +20,12 @@ typedef void(*CallBack)(const char* p);
 CallBack receiveMsgCallback;
 id thisClass;
 int remotePort;
-const char *remoteAddress;
+NSString *remoteAddress;
 void initUDP(CallBack callBack, int port ,const char *address)
 {
     receiveMsgCallback = callBack;
     remotePort = port;
-    remoteAddress = address;
+    remoteAddress = [NSString stringWithUTF8String:address];
     [thisClass  createSocket];
 }
 
@@ -55,7 +51,7 @@ void sendUDP(const char* msg)
 }
 - (BOOL)UDPController:(UIApplication *)application
     didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    NSLog(@"当程序载入后执行1111");
+    NSLog(@"UDPController");
     thisClass = self;
     return  [self UDPController:application
             didFinishLaunchingWithOptions:launchOptions];
@@ -87,9 +83,11 @@ CFSocketRef _socketRef;
     //设置协议族
     addr.sin_family = AF_INET;
     //设置端口
+    //NSLog([NSString stringWithFormat:@"%d",remotePort]);
+    //NSLog(remoteAddress);
     addr.sin_port = htons(remotePort);
     //设置IP地址
-    addr.sin_addr.s_addr = inet_addr(remoteAddress);
+    addr.sin_addr.s_addr = inet_addr(remoteAddress.UTF8String);
     CFDataRef dataRef = CFDataCreate(kCFAllocatorDefault,(UInt8 *)&addr, sizeof(addr));
     
     CFSocketError sockError = CFSocketConnectToAddress(_socketRef,dataRef,20);
@@ -118,16 +116,17 @@ CFSocketRef _socketRef;
 }
 
 void sendMsg (const char * data){
-        ssize_t sendLen = send(CFSocketGetNative(_socketRef), data, strlen(data) + 1, 0);
+     ssize_t sendLen = send(CFSocketGetNative(_socketRef), data, strlen(data) + 1, 0);
+    /*
         if (sendLen > 0) {
             NSLog(@"发送成功");
         }else{
             NSLog(@"发送失败");
         }
+     */
 }
 
 void ServerConnectCallBack(CFSocketRef socket, CFSocketCallBackType type, CFDataRef address, const void * data, void *info) {
-    NSLog(@"ServerConnectCallBack");
     UnityAppController *vc = (__bridge UnityAppController *)(info);
     if (data != NULL) {
         CFRelease(socket);
@@ -142,8 +141,11 @@ void ServerConnectCallBack(CFSocketRef socket, CFSocketCallBackType type, CFData
     //接收到的数据
     NSString *content = [[NSString alloc] initWithBytes:buffer length:readData encoding:NSUTF8StringEncoding];
     dispatch_async(dispatch_get_main_queue(), ^{
-        NSString *data = [NSString stringWithFormat:@"收到消息：%@",content];
-        NSLog(data);
+        //NSString *data = [NSString stringWithFormat:@"收到消息：%@",content];
+        //NSLog(data);
+        if(receiveMsgCallback!= nil){
+            receiveMsgCallback(content.UTF8String);
+        }
     });
 }
 @end
