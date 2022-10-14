@@ -1,0 +1,14 @@
+﻿<Properties StartupConfiguration="{121ED715-AF24-B1B4-D666-6A16000E23C9}|">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/UDPPresenter.cs">
+    <Files>
+      <File FileName="Assets/Scripts/UDPPresenter.cs" Line="28" Column="11" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="cdb07c0f-a90f-48a1-8652-887c8823a3bf" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>
